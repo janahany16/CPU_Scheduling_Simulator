@@ -1,65 +1,32 @@
 #include <stdio.h>
 #include "timeline.h"
 
-void initializeTimeline(Timeline *timeline)
+void timeline_init(Timeline *timeline)
 {
-    timeline->count = 0;
+    if (timeline != NULL) timeline->count = 0;
 }
 
-int addTimelineEntry(Timeline *timeline, int startTime, int endTime, int pid)
+int timeline_add(Timeline *timeline, int start, int end, int pid)
 {
-    if (timeline == NULL)
-    {
-        return 0;
+    if (timeline == NULL || start >= end) return 0;
+    if (timeline->count > 0) {
+        TimelineSegment *last = &timeline->segments[timeline->count - 1];
+        if (last->pid == pid && last->end == start) {
+            last->end = end;
+            return 1;
+        }
     }
-
-    if (timeline->count >= MAX_TIMELINE_ENTRIES)
-    {
-        return 0;
-    }
-
-    if (endTime <= startTime)
-    {
-        return 0;
-    }
-
-    timeline->entries[timeline->count].startTime = startTime;
-    timeline->entries[timeline->count].endTime = endTime;
-    timeline->entries[timeline->count].pid = pid;
-
-    timeline->count++;
-
+    if (timeline->count >= TIMELINE_MAX_SEGMENTS) return 0;
+    timeline->segments[timeline->count++] = (TimelineSegment){start, end, pid};
     return 1;
 }
 
-void displayTimeline(const Timeline *timeline)
+void timeline_print(const Timeline *timeline)
 {
-    int i;
-
-    if (timeline == NULL || timeline->count == 0)
-    {
-        printf("Timeline is empty.\n");
-        return;
-    }
-
-    printf("\nSimulation Timeline:\n");
-    printf("-------------------------------\n");
-    printf("Start\tEnd\tProcess\n");
-    printf("-------------------------------\n");
-
-    for (i = 0; i < timeline->count; i++)
-    {
-        printf("%d\t%d\t",
-               timeline->entries[i].startTime,
-               timeline->entries[i].endTime);
-
-        if (timeline->entries[i].pid == IDLE_PID)
-        {
-            printf("IDLE\n");
-        }
-        else
-        {
-            printf("P%d\n", timeline->entries[i].pid);
-        }
+    if (timeline == NULL) return;
+    for (size_t i = 0; i < timeline->count; ++i) {
+        const TimelineSegment *s = &timeline->segments[i];
+        printf("%d %d %s%d\n", s->start, s->end,
+               s->pid == TIMELINE_IDLE_PID ? "IDLE" : "P", s->pid == TIMELINE_IDLE_PID ? 0 : s->pid);
     }
 }

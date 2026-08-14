@@ -1,0 +1,8 @@
+Expected scheduling outputs
+
+1) FCFS basic: P1[0,5], P2[5,8], P3[8,10]
+2) FCFS idle: IDLE[0,3], P1[3,5]
+3) SRTF sample: P1[0,1], P2[1,2], P3[2,4], P4[4,5], P2[5,8], P1[8,15]
+4) SRTF idle: IDLE[0,3], P1[3,5], P2[5,6]
+5) Tie: P3[0,1], P1[1,4], P2[4,7]
+6) Process validation: invalid arrival/burst/PID/duplicate PID rejected.
