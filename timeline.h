@@ -1,32 +1,24 @@
 #ifndef TIMELINE_H
 #define TIMELINE_H
 
-#define MAX_TIMELINE_ENTRIES 1000
-#define IDLE_PID -1
+#include <stddef.h>
 
-typedef struct
-{
-    int startTime;
-    int endTime;
+#define TIMELINE_MAX_SEGMENTS 1000
+#define TIMELINE_IDLE_PID (-1)
+
+typedef struct {
+    int start;
+    int end;
     int pid;
-} TimelineEntry;
+} TimelineSegment;
 
-typedef struct
-{
-    TimelineEntry entries[MAX_TIMELINE_ENTRIES];
-    int count;
+typedef struct {
+    TimelineSegment segments[TIMELINE_MAX_SEGMENTS];
+    size_t count;
 } Timeline;
 
-/* Initialize the timeline */
-void initializeTimeline(Timeline *timeline);
-
-/* Add a new execution segment */
-int addTimelineEntry(Timeline *timeline, int startTime, int endTime, int pid);
-
-/* Display the timeline */
-void displayTimeline(const Timeline *timeline);
+void timeline_init(Timeline *timeline);
+int timeline_add(Timeline *timeline, int start, int end, int pid);
+void timeline_print(const Timeline *timeline);
 
 #endif
-
-
-
