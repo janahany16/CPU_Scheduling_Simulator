@@ -1,3 +1,21 @@
+# CPU Scheduling Simulator (Team XX - Variant 3)
+
+## Team Members
+* Mariam Hany Refaat - 20220473
+* Zainab Abdelfattah darwish - 20230241
+* Mariam Ahmed Mohammed  - 20240929
+* Mazen Mohamed Sobhy - 20240768
+* Hassan Abdelrahaman Hassan - 20210291
+* Jana Hany Mahmoud Tawfiq - 20240256
+
+## Assigned Variant
+**Variant 3:** FCFS, SRTF, Priority Preemptive
+
+## Compilation Command
+```bash
+gcc -Wall -Wextra -Iinclude src/*.c -o simulator
+
+
 # Task 1 & 2 — Process Model/Input + Algorithm 1/2
 
 This package implements the first two team work packages for Variant 3 of the CPU Scheduling Simulator:
