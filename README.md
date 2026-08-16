@@ -17,50 +17,35 @@
 gcc -Wall -Wextra -Iinclude src/*.c -o simulator
 
 
-# Task 1 & 2 — Process Model/Input + Algorithm 1/2
+Execution Instructions
+Compile the program using the command above.
 
-This package implements the first two team work packages for Variant 3 of the CPU Scheduling Simulator:
-- Process Model + Input Subsystem
-- Algorithm 1: FCFS
-- Algorithm 2: SRTF
+Run the program using ./simulator.
 
-The handbook requires a C multi-file design, a process model with original/runtime state, interactive and file input, validation, scheduling modules, and testing. This package is designed as a clean baseline for integration with the team's existing `timeline.c/.h`, `metrics.c/.h`, and `display.c/.h` modules.
+Use the interactive menu to load data (Option 2 -> data/sample_input.txt) and run the algorithms.
 
-## Process data
-Original input:
-`pid`, `arrival_time`, `burst_time`, `priority`
+Source-File Organization
+src/ - Contains all .c source files (main, algorithms, input, metrics, timeline, display).
 
-Runtime/statistics:
-`remaining_time`, `started`, `completed`, `first_start_time`, `completion_time`, `turnaround_time`, `waiting_time`, `response_time`
+include/ - Contains all .h header files.
 
-## File input format
-First line: number of processes.
-Each following line:
-`PID ArrivalTime BurstTime Priority`
+data/ - Contains the primary sample workload (sample_input.txt).
 
-Example: see `data/sample_input.txt`.
+tests/ - Contains 10 documented test cases covering all edge cases.
 
-## Validation
-- number of processes > 0
-- unique PIDs
-- arrival time >= 0
-- burst time > 0
-- malformed/unreadable input is rejected with a message
+Input-File Format
+The first line contains the total number of processes. Each subsequent line defines a process in the following format:
+[PID] [Arrival Time] [Burst Time] [Priority]
 
-## Shared Process Model / Scheduling
-Both FCFS and SRTF use the same `Process` structure from `include/process.h`. Each scheduler makes a private copy of the input workload and resets runtime fields before simulation, so the original workload remains unchanged for later algorithms.
+Priority Convention
+Smaller numerical value = higher priority (e.g., Priority 1 is higher than Priority 2).
 
-- FCFS: earliest arrival first, then smaller PID; non-preemptive.
-- SRTF: smallest remaining time; preemptive when a ready process has a strictly smaller remaining time; ties by arrival time then PID.
-- CPU idle intervals are stored explicitly in the shared `Timeline`.
+Tie-Breaking Rules
+Earlier arrival time wins.
 
-## Build test runner
-```bash
-gcc -std=c11 -Wall -Wextra -pedantic -Iinclude \
-  src/process.c src/input.c src/timeline.c src/fcfs.c src/srtf.c \
-  tests/test_runner.c -o test_runner
-./test_runner
-```
+If arrival times are identical, the smaller Process ID (PID) wins.
 
-## Integration note
-The schedulers do not define a second Process structure. `fcfs.c` and `srtf.c` both include `scheduler.h`, which exposes the shared `Process` and `Timeline` types. Before final integration, keep this single Process definition and connect the shared timeline to the team metrics/display modules. The example folder structure in the handbook is recommended, not compulsory.
+Assumptions & Known Limitations
+The program assumes the input file is formatted correctly but will reject negative time values, duplicate PIDs, and zero burst times.
+
+The system relies on a maximum timeline segment limit (TIMELINE_MAX_SEGMENTS = 1000).
